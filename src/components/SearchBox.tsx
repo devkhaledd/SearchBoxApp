@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import articles from "../data/demoData";
+import articles, { Article } from "../data/demoData";
 import SearchResults from "./SearchResults";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 
 const SearchBox = () => {
   const [value, setValue] = useState<string>("");
   const [searchResults, setSearchResult] = useState(articles);
+  const [highlightedCount, setHighlightedCount] = useState<number>(0); // State for highlighted word count
 
   const handleSearch = (e: any) => {
     const term = e.target.value.toLowerCase();
@@ -16,11 +17,13 @@ const SearchBox = () => {
         article.title.toLowerCase().includes(term)
     );
     setSearchResult(filteredResults);
+    setHighlightedCount(filteredResults.length);
   };
 
   const handleClear = () => {
     setValue(""); // Clear the search input
     setSearchResult(articles); // Reset search results to all articles
+    setHighlightedCount(0); // Reset highlighted word count
   };
 
   return (
@@ -42,6 +45,12 @@ const SearchBox = () => {
             />
           )}
         </div>
+        {value.length > 0 && (
+          <p className="text-base mt-2">
+            <span className="font-bold">{highlightedCount === 1 ? `${highlightedCount} article` : `${highlightedCount} articles`}</span> were
+            found.
+          </p>
+        )}
       </div>
       <SearchResults results={searchResults} searchTerm={value} />
     </div>
